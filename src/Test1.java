@@ -3,27 +3,35 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 
-public class Test1 extends BaseDriver{
+import java.util.List;
 
-    public static void main(String[] args) {
+
+public class Test1 extends BaseDriver {
+
+    public static void main(String[] args) throws InterruptedException {
 
         driver.get("http://dhtmlgoodies.com/scripts/drag-drop-quiz/drag-drop-quiz-d2.html");
 
-        wait(2);
-
-        WebElement city = driver.findElement(By.id("a1"));
-      //  WebElement country = driver.findElement(By.cssSelector("div[id='questionDiv']>:nth-child(2)"));
-        WebElement country = driver.findElement(By.cssSelector("div[id='q1']+div"));
-
+        List<WebElement> cities = driver.findElements(By.cssSelector("div[id='answerDiv']>div[class='dragDropSmallBox']"));
+        List<WebElement> countries = driver.findElements(By.cssSelector("div[id='questionDiv']>div[class='destinationBox']"));
         wait(2);
 
         Actions action = new Actions(driver);
-        action.dragAndDrop(city,country).perform();
-        wait(2);
-        
+        for (int i = 0; i < cities.size(); i++) {
+            for (int j = 0; j < countries.size(); j++) {
+                action.clickAndHold(cities.get(i)).perform();
+                wait(1);
+                action.release(countries.get(j)).perform();
+                if (cities.get(i).getAttribute("class").equals("correctAnswer")) {
+                    break;
+                }
+            }
+        }
 
-
-
+        // action.moveToElement(city).clickAndHold().perform();
+        // wait(2);
+        // action.release(country).perform();
+        // wait(2);
 
 
         waitAndClose();
